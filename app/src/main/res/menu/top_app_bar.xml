@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_manage_categories"
+        android:title="Manage Categories"
+        android:icon="@android:drawable/ic_menu_manage"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_analytics"
+        android:title="Analytics"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_add_expense_date"
+        android:title="Add Expense (Date)"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        app:showAsAction="never" />
+</menu>

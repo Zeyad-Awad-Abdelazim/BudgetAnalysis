@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Indigo Theme Colors -->
+    <color name="md_theme_light_primary">#3F51B5</color>
+    <color name="md_theme_light_onPrimary">#FFFFFF</color>
+    <color name="md_theme_light_primaryContainer">#E8EAF6</color>
+    <color name="md_theme_light_onPrimaryContainer">#1A237E</color>
+    <color name="md_theme_light_secondary">#3949AB</color>
+    <color name="md_theme_light_onSecondary">#FFFFFF</color>
+    <color name="md_theme_light_secondaryContainer">#C5CAE9</color>
+    <color name="md_theme_light_onSecondaryContainer">#1A237E</color>
+    <color name="md_theme_light_tertiary">#7986CB</color>
+    <color name="md_theme_light_onTertiary">#FFFFFF</color>
+    <color name="md_theme_light_tertiaryContainer">#E8EAF6</color>
+    <color name="md_theme_light_onTertiaryContainer">#1A237E</color>
+</resources>

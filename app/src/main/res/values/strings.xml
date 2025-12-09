@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BudgetPlanner</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="amount">Amount</string>
+    <string name="category">Category</string>
+    <string name="select_date">Select Date</string>
+    <string name="date">Date</string>
+    <string name="today">Today</string>
+</resources>
