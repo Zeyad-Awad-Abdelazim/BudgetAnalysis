@@ -44,14 +44,13 @@ class MainActivity : AppCompatActivity() {
     private var allExpenses: List<ExpenseEntry> = emptyList()
     private var allCategories: List<Category> = emptyList()
     
-    private var currentFilterIndex = 1 // Default: This Month
+    private var currentFilterIndex = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        // Edge to edge config
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -166,15 +165,12 @@ class MainActivity : AppCompatActivity() {
 
         val filteredExpenses = filterExpenses(allExpenses, currentFilterIndex)
         
-        // Update Total
         val total = filteredExpenses.sumOf { it.amount }
         binding.tvTotalAmount.text = String.format("$%.2f", total)
 
-        // Update List
         expenseAdapter.submitList(filteredExpenses)
 
-        // Update Chips and Chart
-        updateBreakdown(filteredExpenses)
+        updateChart(filteredExpenses)
     }
 
     private fun filterExpenses(expenses: List<ExpenseEntry>, filterIndex: Int): List<ExpenseEntry> {
@@ -185,7 +181,7 @@ class MainActivity : AppCompatActivity() {
         val endDate: Long
 
         when (filterIndex) {
-            0 -> { // This Week
+            0 -> {
                 calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
                 resetTime(calendar)
                 startDate = calendar.timeInMillis
@@ -197,7 +193,7 @@ class MainActivity : AppCompatActivity() {
                 calendar.set(Calendar.MILLISECOND, 999)
                 endDate = calendar.timeInMillis
             }
-            1 -> { // This Month
+            1 -> {
                 calendar.set(Calendar.DAY_OF_MONTH, 1)
                 resetTime(calendar)
                 startDate = calendar.timeInMillis
@@ -209,7 +205,7 @@ class MainActivity : AppCompatActivity() {
                 calendar.set(Calendar.MILLISECOND, 999)
                 endDate = calendar.timeInMillis
             }
-            2 -> { // Last Month
+            2 -> {
                 calendar.add(Calendar.MONTH, -1)
                 calendar.set(Calendar.DAY_OF_MONTH, 1)
                 resetTime(calendar)
@@ -222,7 +218,7 @@ class MainActivity : AppCompatActivity() {
                 calendar.set(Calendar.MILLISECOND, 999)
                 endDate = calendar.timeInMillis
             }
-            3 -> { // Last 90 Days
+            3 -> {
                 calendar.add(Calendar.DAY_OF_YEAR, -90)
                 resetTime(calendar)
                 startDate = calendar.timeInMillis
@@ -241,12 +237,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         return expenses.filter { 
-            val expenseDate = resetTimeToStartOfDay(it.createdAt)
+            val expenseDate = toStartOfDay(it.createdAt)
             expenseDate >= startDate && expenseDate <= endDate 
         }
     }
     
-    private fun resetTimeToStartOfDay(timestamp: Long): Long {
+    private fun toStartOfDay(timestamp: Long): Long {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = timestamp
         resetTime(calendar)
@@ -260,22 +256,20 @@ class MainActivity : AppCompatActivity() {
         calendar.set(Calendar.MILLISECOND, 0)
     }
 
-    private fun updateBreakdown(expenses: List<ExpenseEntry>) {
+    private fun updateChart(expenses: List<ExpenseEntry>) {
         val categoryTotals = expenses.groupBy { it.categoryId }
             .mapValues { entry -> entry.value.sumOf { it.amount } }
 
-        // Update Chips
         binding.chipGroupCategories.removeAllViews()
         categoryTotals.entries.sortedByDescending { it.value }.forEach { (catId, amount) ->
             val category = allCategories.find { it.id == catId } ?: return@forEach
             val chip = Chip(this)
             chip.text = "${category.name}: $${String.format("%.0f", amount)}"
             chip.setChipIconResource(IconUtils.getIconResId(category.iconName))
-            chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(Color.parseColor("#E8EAF6")) // Light Indigo
+            chip.chipBackgroundColor = android.content.res.ColorStateList.valueOf(Color.parseColor("#E8EAF6"))
             binding.chipGroupCategories.addView(chip)
         }
 
-        // Update PieChart
         val entries = ArrayList<PieEntry>()
         val colors = ArrayList<Int>()
 
@@ -324,13 +318,11 @@ class MainActivity : AppCompatActivity() {
         val selectedCalendar = defaultDate ?: Calendar.getInstance()
         resetTime(selectedCalendar)
         
-        // Setup Category Spinner
         val categoryNames = allCategories.map { it.name }
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoryNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         dialogBinding.spinnerCategory.adapter = adapter
 
-        // Setup Date - Always show date picker
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         dialogBinding.tvDateLabel.visibility = View.VISIBLE
         dialogBinding.tvSelectedDate.setText(dateFormat.format(selectedCalendar.time))
@@ -369,7 +361,6 @@ class MainActivity : AppCompatActivity() {
                 if (selectedCategoryIndex == -1) return@setPositiveButton
                 val selectedCategory = allCategories[selectedCategoryIndex]
 
-                // Ensure time is reset to start of day
                 resetTime(selectedCalendar)
                 
                 val expense = ExpenseEntry(

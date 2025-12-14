@@ -53,26 +53,16 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         suspend fun populateDatabase(categoryDao: CategoryDao) {
-            // Check if categories already exist
             val existingCategories = categoryDao.getAllCategoriesSync()
             if (existingCategories.isNotEmpty()) {
-                return // Categories already exist, don't insert defaults
+                return
             }
             
-            // Default Categories
-            // 1. Food - restaurant icon - primary color (indigo)
-            // 2. Transports - bus icon - tertiary color
-            // 3. Bills - receipt icon - secondary color
-            // 4. Health - heart icon - pink
-            // 5. Entertainment - celebration icon - amber
-            
-            // Using approximate color values for defaults
-            
-            categoryDao.insert(Category(UUID.randomUUID().toString(), "Food", "restaurant", Color.parseColor("#3F51B5"))) // Indigo
-            categoryDao.insert(Category(UUID.randomUUID().toString(), "Transports", "bus", Color.parseColor("#7986CB"))) // Indigo 300
-            categoryDao.insert(Category(UUID.randomUUID().toString(), "Bills", "receipt", Color.parseColor("#303F9F"))) // Indigo 700
-            categoryDao.insert(Category(UUID.randomUUID().toString(), "Health", "heart", Color.parseColor("#E91E63"))) // Pink
-            categoryDao.insert(Category(UUID.randomUUID().toString(), "Entertainment", "celebration", Color.parseColor("#FFC107"))) // Amber
+            categoryDao.insert(Category(UUID.randomUUID().toString(), "Food", "restaurant", Color.parseColor("#3F51B5")))
+            categoryDao.insert(Category(UUID.randomUUID().toString(), "Transports", "bus", Color.parseColor("#7986CB")))
+            categoryDao.insert(Category(UUID.randomUUID().toString(), "Bills", "receipt", Color.parseColor("#303F9F")))
+            categoryDao.insert(Category(UUID.randomUUID().toString(), "Health", "heart", Color.parseColor("#E91E63")))
+            categoryDao.insert(Category(UUID.randomUUID().toString(), "Entertainment", "celebration", Color.parseColor("#FFC107")))
         }
     }
 }

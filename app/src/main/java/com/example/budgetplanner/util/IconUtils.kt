@@ -23,8 +23,7 @@ object IconUtils {
         "music" to R.drawable.ic_music,
         "book" to R.drawable.ic_book,
         "pets" to R.drawable.ic_pets,
-//        "childcare" to R.drawable.ic_childcare,
-        "default" to R.drawable.ic_receipt // Fallback
+        "default" to R.drawable.ic_receipt
     )
 
     fun getIconResId(iconName: String): Int {

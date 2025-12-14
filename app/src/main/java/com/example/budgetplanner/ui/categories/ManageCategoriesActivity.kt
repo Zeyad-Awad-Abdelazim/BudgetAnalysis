@@ -82,7 +82,7 @@ class ManageCategoriesActivity : AppCompatActivity() {
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogBinding.root)
             .setCancelable(false)
-            .setPositiveButton("Save", null) // Override later
+            .setPositiveButton("Save", null)
             .setNegativeButton("Cancel", null)
             .create()
 
@@ -92,7 +92,6 @@ class ManageCategoriesActivity : AppCompatActivity() {
             dialogBinding.etCategoryName.setText(category.name)
         }
 
-        // Icon Picker
         var selectedIcon = category?.iconName ?: "receipt"
         val iconKeys = IconUtils.icons.keys.toList().filter { it != "default" }
         val iconAdapter = IconPickerAdapter(iconKeys, selectedIcon) { icon ->
@@ -101,19 +100,18 @@ class ManageCategoriesActivity : AppCompatActivity() {
         dialogBinding.rvIconPicker.layoutManager = GridLayoutManager(this, 5)
         dialogBinding.rvIconPicker.adapter = iconAdapter
 
-        // Color Picker
         var selectedColor = category?.colorValue ?: Color.parseColor("#3F51B5")
         val colors = listOf(
-            "#3F51B5", // Primary (Indigo)
-            "#3949AB", // Secondary
-            "#7986CB", // Tertiary
-            "#E91E63", // Pink
-            "#FFC107", // Amber
-            "#4CAF50", // Green
-            "#2196F3", // Blue
-            "#9C27B0", // Purple
-            "#FF9800", // Orange
-            "#F44336"  // Red
+            "#3F51B5",
+            "#3949AB",
+            "#7986CB",
+            "#E91E63",
+            "#FFC107",
+            "#4CAF50",
+            "#2196F3",
+            "#9C27B0",
+            "#FF9800",
+            "#F44336"
         ).map { Color.parseColor(it) }
         
         val colorAdapter = ColorPickerAdapter(colors, selectedColor) { color ->
@@ -153,7 +151,6 @@ class ManageCategoriesActivity : AppCompatActivity() {
         dialog.show()
     }
     
-    // Inner Adapter classes for Dialog
     inner class IconPickerAdapter(
         private val icons: List<String>,
         private var selectedIcon: String,
@@ -170,7 +167,6 @@ class ManageCategoriesActivity : AppCompatActivity() {
             val iconName = icons[position]
             holder.binding.ivIcon.setImageResource(IconUtils.getIconResId(iconName))
             
-            // Update selection state
             val isSelected = iconName == selectedIcon
             holder.binding.cardView.strokeWidth = if (isSelected) 4 else 0
             holder.binding.cardView.strokeColor = if (isSelected) 
@@ -206,12 +202,10 @@ class ManageCategoriesActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val color = colors[position]
             
-            // Set color with circle shape
             val drawable = holder.itemView.context.getDrawable(R.drawable.circle_background)?.mutate()
             drawable?.setTint(color)
             holder.binding.viewColor.background = drawable
             
-            // Update selection state
             val isSelected = color == selectedColor
             holder.binding.cardView.strokeWidth = if (isSelected) 4 else 2
             holder.binding.cardView.strokeColor = if (isSelected) 

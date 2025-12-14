@@ -43,7 +43,7 @@ class AnalyticsActivity : AppCompatActivity() {
         setupRecyclerView()
         setupDatePickers()
         setupPieChart()
-        observeData()
+        watchData()
     }
 
     private fun setupRecyclerView() {
@@ -56,7 +56,6 @@ class AnalyticsActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         
-        // Default to current month
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         resetTime(calendar)
         startDate = calendar.timeInMillis
@@ -111,7 +110,7 @@ class AnalyticsActivity : AppCompatActivity() {
         calendar.set(Calendar.MILLISECOND, 0)
     }
     
-    private fun resetTimeToStartOfDay(timestamp: Long): Long {
+    private fun toStartOfDay(timestamp: Long): Long {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = timestamp
         resetTime(calendar)
@@ -128,7 +127,7 @@ class AnalyticsActivity : AppCompatActivity() {
         binding.pieChart.transparentCircleRadius = 45f
     }
 
-    private fun observeData() {
+    private fun watchData() {
         viewModel.allCategories.observe(this) { categories ->
             allCategories = categories
             updateUI()
@@ -145,22 +144,19 @@ class AnalyticsActivity : AppCompatActivity() {
 
         val filteredExpenses = if (isDateFilterEnabled) {
             allExpenses.filter { 
-                val expenseDate = resetTimeToStartOfDay(it.createdAt)
+                val expenseDate = toStartOfDay(it.createdAt)
                 expenseDate >= startDate && expenseDate <= endDate 
             }
         } else {
             allExpenses
         }
 
-        // Summary Cards
         val totalSpending = filteredExpenses.sumOf { it.amount }
         val totalEntries = filteredExpenses.size
 
         binding.tvTotalSpending.text = String.format("$%.2f", totalSpending)
         binding.tvTotalEntries.text = totalEntries.toString()
 
-        // Calculate Average Monthly Spending
-        // Group by Year-Month
         if (filteredExpenses.isNotEmpty()) {
             val dateFormat = SimpleDateFormat("yyyy-MM", Locale.getDefault())
             val monthlyGroups = filteredExpenses.groupBy { dateFormat.format(it.createdAt) }
@@ -170,7 +166,6 @@ class AnalyticsActivity : AppCompatActivity() {
             binding.tvAvgSpending.text = "$0.00"
         }
 
-        // Category Breakdown
         val categoryTotals = filteredExpenses.groupBy { it.categoryId }
             .mapValues { entry -> entry.value.sumOf { it.amount } }
 
@@ -181,7 +176,6 @@ class AnalyticsActivity : AppCompatActivity() {
 
         breakdownAdapter.submitList(breakdownList)
 
-        // Pie Chart
         val entries = ArrayList<PieEntry>()
         val colors = ArrayList<Int>()
 
